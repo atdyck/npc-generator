@@ -50,21 +50,22 @@ const character = {
 	proficiencies: [],
 };
 
+// As above, kept as a reminder
 const vocation = {
 	name: '', //Name of the vocation
-	category: '', //laborer, crafter, military, etc.
+	ranks: [],
 	statReq: [,], //Not sure how to implement this yet.
 	primarySkills: [], //Every character in this vocation receives these skills
 	secondarySkills: [], //A character may get skills chosen randomly from this list
 };
 
-var rowButton = document.getElementById('rowButton');
+var rowButton = document.getElementById('rowButton'); 
 var testButton = document.getElementById('testButton');
 
 
 rowButton.addEventListener('click', UpdateRows);
 
-//Stores lists and weighted lists
+//Various lists and weighted lists
 const ethnicityList = [['Tirenean',50],['Nicean',20],['Krysean',10],['Opelenean',10],['Dwarven',5],['Elven',5]]
 const genderList = ['male', 'female']
 const vocationCategoryList = [['laborer',26],['crafter',34],['merchant',14],['specialist',2],['hosteller',5],['entertainer',2],['thief',2],['military',6],['fighter',2],['minorEcclesiastic',2],['cleric',1],['minorMagician',1],['mage',1],['patrician',1]]
@@ -104,14 +105,14 @@ const vocationList = {
 	crafter : [['apothecary',2],['armorer',2],['baker',2],['blacksmith',2],['bookbinder',1],['bowyer/fletcher',2],['brewer',3],['brickmaker',2],['butcher',5],['cabinetmaker',1],['candlemaker',3],['capper/hatter',2],['carpenter',1],['chaloner/cordwainer',2],['clothmaker',6],['cobbler/cordwainer',2],['confectioner',2],['cooper',1],['coppersmith',2],['corder/ropemaker',1],['decorative artist',3],['florist',1],['gemcutter',1],['glassworker',2],['goldsmith',4],['hornworker',2],['illuminator',2],['jeweler',1],['locksmith',1],['mason',2],['parchmentmaker',1],['perfumer',1],['potter',3],['saddler/fuster',2],['scribe',4],['shipwright',1],['silversmith',1],['spinner',6],['tailor/seamstress',6],['tanner/tawer',4],['taxidermist',1],['tinker/toymaker',2],['wainwright',1],['weaponsmith',2],['wheelwright',1]],
 	merchant : [['bookseller',1],['chandler/upholder',5],['coppermonger',2],['cornmonger',12],['draper',11],['fishmonger',7],['fripperer',6],['furrier',2],['greengrocer',2],['horsemonger',4],['ironmonger',9],['lawyer',5],['lumbermonger',9],['mercer',5],['oilmonger',2],['peltmonger/skinner',6],['poulterer',3],['salter/pepperer',4],['vinter',5]],
 	specialist : [['alchemist',12],['animalTrainer',11],['artillerist',3],['engineer',11],['healer',11],['marshal',17],['navigator',5],['quartermaster',3],['sage',11],['scoutPathfinder',5],['scoutSurveyor',4],['siegeEngineer',3],['shipCaptain',3]],
-	hosteller : [['cantinakeeper',60],['tavernkeeper',25],['innkeeper',10],['brothelkeeper',5]],
+	hosteller : [['hosteller',95],['brothelkeeper',5]],
 	entertainer : [['actor',20],['musician',45],['dancer',42],['carouser',3]],
 	thief : [['thief',1]],
 	military : [['light foot',20],['heavy foot',45],['crossbow',42],['bowman',3],['longbowman',4],['light cavalry',5],['horse archer',6],['medium cavalry',7],['heavy cavalry',8],['cataphract',9]],
 	fighter : [['fighter',1]],
-	minorEcclesiastic : [['anchorite',2],['oracle',8],['almsgiver/missionary',10],['village witch',15],['seminarian',30],['hospitalist/medician',25],['sacred courtesan',10],['inquisitor',7],['cultist/heretic',12]],
+	minorEcclesiastic : [['anchorite',2],['oracle',8],['missionary',10],['villagWitch',15],['seminarian',30],['hospitalistMedician',25],['sacredCourtesan',10],['inquisitor',7],['cultistHeretic',12]],
 	cleric : [['cleric',1]],
-	minorMagician : [['augur',2],['occultist',8],['astrologer',10],['hedge magician',15],['apprentice mage',30],['prestidigitator',15],['charlatan',10],['failed apprentice',7],['apprentice warlock',3]],
+	minorMagician : [['augur',2],['occultist',8],['astrologer',10],['hedgeMagician',15],['apprenticeMage',30],['prestidigitator',15],['charlatan',10],['failedApprentice',7],['apprenticeWarlock',3]],
 	mage : [['mage',1]],
 	patrician : [['patrician',1]]
 }
@@ -131,7 +132,7 @@ const vocationCharacteristics = {
 		},
 		prostitute : {
 			name: 'Prostitute',
-			statReq: ['cha',6],
+			statReq: ['cha',6], //['Name of minimum stat', lowest allowable number for that stat.
 			primarySkills: ['Seduction'], //Every character in this vocation receives these skills
 			secondarySkills: ['Performance (dancing)'], //A character may get skills chosen randomly from this list
 		},
@@ -155,7 +156,7 @@ const vocationCharacteristics = {
 	crafter : {
 		otherCrafter : {
 			name: '',
-			ranks: [['Apprentice',19,1],['Journeyman',10,2],['Master',5,3]],
+			ranks: [['Apprentice',19,1],['Journeyman',10,2],['Master',5,3]], //['Name', frequency weight, ranks of relevent Craft proficiency]
 			primarySkills: ['Craft ()'],
 			secondarySkills: ['Bargaining', 'Endurance'],
 		},
@@ -166,7 +167,7 @@ const vocationCharacteristics = {
 			name: 'Lawyer',
 			ranks: [['Apprentice',8,1],['Licensed',4,2],['Master',2,3]],
 			primarySkills: ['Profession (law)', 'Diplomacy'], //if rank is 2 or 3, give one or two secondarySkills
-			secondarySkills: [],
+			secondarySkills: ['Knowledge (history)', 'Bribery'],
 		},
 		
 		otherMerchant : {
@@ -181,7 +182,7 @@ const vocationCharacteristics = {
 	specialist : {
 		alchemist : {
 			name: 'Alchemist',
-			statReq: ['int',13],
+			statReq: ['int', 13],
 			ranks: [['Apprentice',6,1],['Assistant',3,2],['Master',3,3]],
 			classChance: '', //If a master, 25% Mage
 			primarySkills: ['Alchemy'],
@@ -195,15 +196,266 @@ const vocationCharacteristics = {
 		},
 		artillerist : {
 			name: 'Artillerist',
-			
+			statReq: ['str', 9],
+			classChance: '', //25% Fighter
 			primarySkills: ['Siege engineering'],
 			secondarySkills: ['Manual of arms', 'Endurance', 'Leadership', 'Military strategy'],
 		},
+		engineer : {
+			name: 'Engineer',
+			statReq: ['int', 9],
+			ranks: [['Apprentice',6,1],['Assistant',3,2],['Master',2,4]],
+			classChance: '', //1% Dwarven Machinist
+			primarySkills: ['Engineering'],
+			secondarySkills: ['Knowledge (architecture)', 'Craft'],
+		},
+		healer : {
+			name: 'Healer',
+			statReq: ['wis', 9],
+			ranks: [['Common',6,1],['Physicker',3,2],['Chirgeon',2,3]],
+			classChance: '', //25% Priestess
+			primarySkills: ['Healing'],
+			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Theology', 'Naturalism'],
+		},
+		//COME BACK TO THIS ONE. Make each type of marshal a seperate entry, or somehow meld them together?
+		marshal : { 
+			name: 'Marshal',
+			statReq: ['int', 9],
+			
+		},
+		navigator : {
+			name: 'Navigator',
+			classChance: '', //50% Explorer. Venturer?
+			primarySkills: ['Navigation'],
+			secondarySkills: ['Mapping', 'Seafaring', 'Endurance',  'Navigation', 'Riding'],
+		},
+		quartermaster : {
+			name: 'Quartermaster',
+			classChance: '', //25% fighter. Venturer?
+			primarySkills: ['Bargaining', 'Profession (quartermaster)'],
+			secondarySkills: ['Manual of arms', 'Endurance'],
+		},
+		sage : {
+			name: 'Sage',
+			statReq: ['int',9],
+			classChance: '', //If master, 25% Mage or Bard.
+			ranks: [['Apprentice',6,1],['Assistant',3,2],['Master',2,3]],
+			primarySkills: ['Knowledge','Loremastery'],
+			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Magical engineering', 'Theology', 'Military strategy', 'Naturalism']
+		},
+		scoutPathfinder : {
+			name: 'Scout (pathfinder)',
+			classChance: '', //25% Explorer or Venturer. L&E says 100% Explorer.
+			primarySkills: ['Precise shooting', 'Tracking'],
+			secondarySkills: ['Endurance', 'Mapping', 'Naturalism', 'Navigation', 'Riding', 'Survival', 'Tracking', 'Trapping'],
+		},
+		scoutSurveyor : {
+			name: 'Scout (land surveyor)',
+			classChance: '', //25% Explorer or Venturer. L&E says 100% Explorer.
+			primarySkills: ['Land surveying', 'Mapping'],
+			secondarySkills: ['Endurance', 'Naturalism', 'Navigation', 'Riding', 'Survival', 'Tracking', 'Trapping'],
+		},
+		siegeEngineer : {
+			name: 'Siege engingeer',
+			classChance: '', //1% Dwarven machinist. 25% Fighter?
+			primarySkills: ['Siege engineering', 'Siege engineering'],
+			secondarySkills: ['Manual of arms', 'Endurance', 'Leadership', 'Military strategy']
+		},
+		shipCaptain : {
+			name: 'Ship Captain',
+			classChance: '', //50% Explorer or Venturer
+			primarySkills: ['Seafaring','Seafaring','Leadership'],
+			secondarySkills: ['Bargaining', 'Diplomacy', 'Endurance', 'Intimidation', 'Language', 'Military strategy', 'Navigation', 'Seduction']
+		},
+	},
+	
+	hosteller : {
+		hosteller : {
+			name: '',
+			ranks: [['Cantinakeeper',12,1],['Tavernkeeper',5,2],['Innkeeper',2,3]],
+			primarySkills: ['Profession (eatery management)'],
+			secondarySkills: ['Craft (cooking)', 'Intimidation', 'Lip reading']
+		},
+		brotherkeeper : {
+			name: 'Brothelkeeper',
+			statReq: ['dex',9],
+			primarySkills: ['Profession (brothel management)', 'Profession (brothel management)'],
+			secondarySkills: ['Bargaining','Eavesdropping', 'Intimidation', 'Lip reading', 'Seduction'],
+		},
+	},
+	
+	entertainer : {
+		actor : {
+			name: 'Actor',
+			classChance: '', //25% Bard
+			ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
+			primarySkills: ['Performance (acting)'],
+			secondarySkills: ['Bargaining', 'Disguise', 'Craft', 'Performance (instrument)']
+		},
+		musician : {
+			name: 'Musician',
+			classChance: '', //25% Bard
+			ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
+			primarySkills: ['Performance (instrument)'],
+			secondarySkills: ['Bargaining', 'Disguise', 'Knowledge (music history)', 'Performance (other instrument)']
+		},
+		dancer : {
+			name: 'Dancer',
+			classChance: '', //25% Bard
+			ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
+			primarySkills: ['Performance (dancing)'],
+			secondarySkills: ['Bargaining', 'Disguise', 'Seduction', 'Endurance']
+		},
+		musician : {
+			name: 'Carouser',
+			classChance: '', //25% Bard
+			primarySkills: [],
+			secondarySkills: ['Diplomacy','Lip reading','Performance','Seduction','Gambling']
+		},
+	},
+	
+	thief : {
+		thief : '' //Generate Thief
+	},
+	
+	//COME BACK TO THIS ONE. Make each type of soldier a seperate entry, or somehow meld them together?
+	military : {
+		footman: {
+			name: '',
+			classChance: '', //25% Fighter
+			statReq: ['str', 9],
+			primarySkills: [],
+			secondarySkills: ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Riding', 'Seafaring', 'Siege engineering', 'Survival']
+		},
+		cavalryman: {
+			name: '',
+			classChance: '', //25% Fighter
+			statReq: ['str', 9],
+			primarySkills: ['Riding'],
+			secondarySkills: ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Seafaring', 'Siege engineering', 'Survival']
+		},
+	},
+	
+	fighter : {
+		fighter : '' //Generate Fighter
+	},
+	
+	minorEcclesiastic : {
+		anchorite: {
+			name: 'Anchorite',
+			primarySkills: [],
+			secondarySkills: ['Blind fighting', 'Knowledge', 'Sensing power', 'Theology']
+		},
+		oracle: {
+			name: 'Oracle',
+			primarySkills: ['Prophecy'],
+			secondarySkills: ['Knowledge', 'Language', 'Military strategy', 'Naturalism', 'Theology']
+		},
+		missionary: {
+			name: 'Almsgiver/Missionary',
+			primarySkills: ['Bargaining','Performance (oration)'],
+			secondarySkills: ['Bribery', 'Diplomacy', 'Healing', 'Theology']
+		},
+		villageWitch : {
+			name: 'Village witch',
+			primarySkills: ['Village wisdom'],
+			secondarySkills: ['Alchemy', 'Craft', 'Healing', 'Naturalism', 'Seduction', 'Theology']
+		},
+		seminarian : {
+			name: 'Seminarian',
+			primarySkills: ['Theology'],
+			secondarySkills: ['Alchemy', 'Animal husbandry', 'Diplomacy', 'Healing', 'Knowledge', 'Loremastery', 'Naturalism']
+		},
+		hospitalistMedician : {
+			name: 'Hospitalist/Medican',
+			primarySkills: ['Healing'],
+			secondarySkills: ['Alchemy', 'Healing', 'Naturalism', 'Theology']
+		},
+		sacredCourtesan : {
+			name: 'Sacred courtesan',
+			primarySkills: ['Seduction'],
+			secondarySkills: ['Performance (dancing)','Endurance']
+		},
+		inquisitor : {
+			name: 'Inquisitor',
+			primarySkills: ['Sensing evil','Intimidation'],
+			secondarySkills: ['Diplomacy', 'Healing', 'Knowledge (history)', 'Profession (lawyer)', 'Theology']
+		},
+		cultistHeretic : {
+			name: 'Cultist/Heretic',
+			primarySkills: [],
+			secondarySkills: ['Alchemy', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying', 'Theology']
+		},
+	},
+	
+	cleric : {
+		cleric: '' //Generate Cleric
+	},
+	
+	minorMagician : {
+		augur : {
+			name: 'Augur',
+			primarySkills: ['Prophecy'],
+			secondarySkills: ['Knowledge', 'Language', 'Military strategy', 'Naturalism', 'Theology']
+		},
+		occultist : {
+			name: 'Occultist',
+			primarySkills: ['Knowledge (occult)'],
+			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying']
+		},
+		astrologer : {
+			name: 'Astrologer',
+			primarySkills: ['Knowledge (astrology)', 'Knowledge (astrology)'],
+			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Knowledge (astrology)', 'Loremastery', 'Magical engineering', 'Prophecy']
+		},
+		hedgeMagician : {
+			name: 'Hedge magician',
+			primarySkills: ['Hedge wizardry'],
+			secondarySkills: ['Alchemy', 'Craft', 'Diplomacy', 'Healing', 'Language', 'Mapping', 'Naturalism', 'Prestidigitation']
+		},
+		apprenticeMage : {
+			name: 'Apprentice mage',
+			primarySkills: ['Collegiate wizardry'],
+			secondarySkills: ['Alchemy', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Profession']
+		},
+		prestidigitator : {
+			name: 'Prestidigitator',
+			primarySkills: ['Prestidigitation'],
+			secondarySkills: ['Performance', 'Collegiate Wizardry', 'Hedge Wizardry']
+		},
+		charlatan : {
+			name: 'Charlatan',
+			primarySkills: ['Profession (huckster)'],
+			secondarySkills: ['Alchemy', 'Bargaining', 'Disguise', 'Mimicry', 'Prestidigitation']
+		},
+		failedApprentice : {
+			name: 'Failed apprentice',
+			primarySkills: ['Collegiate wizardry'],
+			secondarySkills: ['Arcane dabbling', 'Alchemy', 'Gambling', 'Intimidation', 'Knowledge', 'Seduction']
+		},
+		apprenticeWarlock : {
+			name: 'Apprentice warlock',
+			primarySkills: [],
+			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Theology']
+		}
+	},
+	
+	mage : {
+		mage : '' //Generate Mage
+	},
+	
+	patrician : {
+		patrician : {
+			name: "Patrician",
+			classChance: '', //25% Fighter
+			primarySkills: ['Diplomacy'],
+			secondarySkills: ['Art', 'Gambling', 'Intimidation', 'Knowledge', 'Language', 'Leadership', 'Military strategy', 'Profession', 'Riding', 'Seduction', 'Theology']
+		}
 	},
 };
 
 function UpdateRows() {
-	//PROBABLY WON'T KEEP THIS. How many rows there should be, based on the number in the text box.
+	//PROBABLY WON'T KEEP THIS. How many rows should be added, based on the number in the text box.
 	var neededRows = document.getElementById('numberRows').value;
 	
 	var currentRows = document.getElementById('table').rows.length;
