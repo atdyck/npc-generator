@@ -28,6 +28,8 @@
 </center>
 
 <script>
+//How should I code proficiencies?
+//How to make the otherLaborer work? Should I split it from the enumerated laborer vocations?
 //Goal: Make a function that generates a character, fills in its characteristics, creates a new row on the table, and puts each relevent property into the appropriate cell.
 //https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Basics#setting_object_members
 
@@ -101,7 +103,7 @@ const nameList = {
 };
 
 const vocationList = {
-	laborer : [['barber',3],['bath attendant/masseuse',3],['bricklayer',2],['cook',11],['dockworker',3],['fuller/launderer',3],['gondolier/rower',7],['gongfarmer/streetcleaner',2],['hawker',6],['stablehand',8],['maidservant',3],['prostitute',8],['ratcatcher',1],['roofer/tiler',1],['sailor',3],['scullion',9],['sawyer/woodcutter',2],['teamster',3],['tavernworker',12],['unskilledLaborer',10]],
+	laborer : [['barber',3],['bathAttendant',3],['bricklayer',2],['cook',11],['dockworker',3],['launderer',3],['rower',7],['streetcleaner',2],['hawker',6],['stablehand',8],['maidservant',3],['prostitute',8],['ratcatcher',1],['roofer',1],['sailor',3],['scullion',9],['woodcutter',2],['teamster',3],['tavernworker',12],['unskilledLaborer',10]],
 	crafter : [['apothecary',2],['armorer',2],['baker',2],['blacksmith',2],['bookbinder',1],['bowyer/fletcher',2],['brewer',3],['brickmaker',2],['butcher',5],['cabinetmaker',1],['candlemaker',3],['capper/hatter',2],['carpenter',1],['chaloner/cordwainer',2],['clothmaker',6],['cobbler/cordwainer',2],['confectioner',2],['cooper',1],['coppersmith',2],['corder/ropemaker',1],['decorative artist',3],['florist',1],['gemcutter',1],['glassworker',2],['goldsmith',4],['hornworker',2],['illuminator',2],['jeweler',1],['locksmith',1],['mason',2],['parchmentmaker',1],['perfumer',1],['potter',3],['saddler/fuster',2],['scribe',4],['shipwright',1],['silversmith',1],['spinner',6],['tailor/seamstress',6],['tanner/tawer',4],['taxidermist',1],['tinker/toymaker',2],['wainwright',1],['weaponsmith',2],['wheelwright',1]],
 	merchant : [['bookseller',1],['chandler/upholder',5],['coppermonger',2],['cornmonger',12],['draper',11],['fishmonger',7],['fripperer',6],['furrier',2],['greengrocer',2],['horsemonger',4],['ironmonger',9],['lawyer',5],['lumbermonger',9],['mercer',5],['oilmonger',2],['peltmonger/skinner',6],['poulterer',3],['salter/pepperer',4],['vinter',5]],
 	specialist : [['alchemist',12],['animalTrainer',11],['artillerist',3],['engineer',11],['healer',11],['marshal',17],['navigator',5],['quartermaster',3],['sage',11],['scoutPathfinder',5],['scoutSurveyor',4],['siegeEngineer',3],['shipCaptain',3]],
@@ -120,6 +122,9 @@ const vocationList = {
 
 const vocationCharacteristics = {
 	laborer : {
+		primarySkills: ['Labor ()', 'Endurance'],
+		secondarySkills: [],
+		
 		cook : {
 			name : 'Cook',
 			primarySkills: ['Craft (cooking)'], //Every character in this vocation receives these skills
@@ -146,36 +151,74 @@ const vocationCharacteristics = {
 			primarySkills: ['Endurance'], //Every character in this vocation receives these skills
 			secondarySkills: [], //A character may get skills chosen randomly from this list
 		},
-		otherLaborer : {
-			name: '',
-			primarySkills: ['Labor ()', 'Endurance'], //Every character in this vocation receives these skills
-			secondarySkills: [], //A character may get skills chosen randomly from this list
+		
+		barber : {
+			name: 'Barber' //Skills should be inherited from laborer. I think.
 		},
+		bathAttendant : {
+			name: 'Bath attendant/Masseuse' //Skills should be inherited from laborer. I think.
+		},
+		bricklayer : {
+			name: 'Bricklayer' //Skills should be inherited from laborer. I think.
+		},
+		dockworker : {
+			name: 'Dockworker' //Skills should be inherited from laborer. I think.
+		},
+		launderer : {
+			name: 'Fuller/Launderer' //Skills should be inherited from laborer. I think.
+		},
+		rower : {
+			name: 'Gondolier/Rower' //Skills should be inherited from laborer. I think.
+		},
+		streetcleaner : {
+			name: 'Streetcleaner' //Skills should be inherited from laborer. I think.
+		},
+		hawker : {
+			name: 'Hawker' //Skills should be inherited from laborer. I think.
+		},
+		maidservant : {
+			name: 'Maidservant' //Skills should be inherited from laborer. I think.
+		},
+		ratcatcher : {
+			name: 'Ratcatcher' //Skills should be inherited from laborer. I think.
+		},
+		roofer : {
+			name: 'Roofer/Tiler' //Skills should be inherited from laborer. I think.
+		},
+		scullion : {
+			name: 'Scullion' //Skills should be inherited from laborer. I think.
+		},
+		woodcutter : {
+			name: 'Sawyer/Woodcutter' //Skills should be inherited from laborer. I think.
+		},
+		teamster : {
+			name: 'Teamster' //Skills should be inherited from laborer. I think.
+		},
+		tavernworker : {
+			name: 'Tavernworker' //Skills should be inherited from laborer. I think.
+		},
+		
 	},
 	
 	crafter : {
-		otherCrafter : {
-			name: '',
-			ranks: [['Apprentice',19,1],['Journeyman',10,2],['Master',5,3]], //['Name', frequency weight, ranks of relevent Craft proficiency]
-			primarySkills: ['Craft ()'],
-			secondarySkills: ['Bargaining', 'Endurance'],
-		},
+		name: 'Some sort of craftsperson',
+		ranks: [['Apprentice',19,1],['Journeyman',10,2],['Master',5,3]], //['Name', frequency weight, ranks of relevent Craft proficiency]
+		primarySkills: ['Craft ()'],
+		secondarySkills: ['Bargaining', 'Endurance'],
 	},
 	
 	merchant : {
+		name: 'Other merchant', //Testing value
+		ranks: [['Apprentice',8,1],['Licensed',4,2],['Master',2,3]],
+		classChance: '',//If a master, 25% Venturer. if statement?
+		primarySkills: ['Bargaining'], //if rank is 2 or 3, give one or two secondarySkills
+		secondarySkills: ['Bargaining', 'Craft', 'Diplomacy', 'Language', 'Navigation', 'Riding', 'Seafaring'],
+		
 		lawyer : {
 			name: 'Lawyer',
 			ranks: [['Apprentice',8,1],['Licensed',4,2],['Master',2,3]],
 			primarySkills: ['Profession (law)', 'Diplomacy'], //if rank is 2 or 3, give one or two secondarySkills
 			secondarySkills: ['Knowledge (history)', 'Bribery'],
-		},
-		
-		otherMerchant : {
-			name: '',
-			ranks: [['Apprentice',8,1],['Licensed',4,2],['Master',2,3]],
-			classChance: '',//If a master, 25% Venturer. if statement?
-			primarySkills: ['Bargaining'], //if rank is 2 or 3, give one or two secondarySkills
-			secondarySkills: ['Bargaining', 'Craft', 'Diplomacy', 'Language', 'Navigation', 'Riding', 'Seafaring']
 		},
 	},
 	
@@ -271,7 +314,7 @@ const vocationCharacteristics = {
 	
 	hosteller : {
 		hosteller : {
-			name: '',
+			name: 'Hosteller', //Testing value
 			ranks: [['Cantinakeeper',12,1],['Tavernkeeper',5,2],['Innkeeper',2,3]],
 			primarySkills: ['Profession (eatery management)'],
 			secondarySkills: ['Craft (cooking)', 'Intimidation', 'Lip reading']
@@ -321,14 +364,14 @@ const vocationCharacteristics = {
 	//COME BACK TO THIS ONE. Make each type of soldier a seperate entry, or somehow meld them together?
 	military : {
 		footman: {
-			name: '',
+			name: 'Footman', //Testing value
 			classChance: '', //25% Fighter
 			statReq: ['str', 9],
 			primarySkills: [],
 			secondarySkills: ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Riding', 'Seafaring', 'Siege engineering', 'Survival']
 		},
 		cavalryman: {
-			name: '',
+			name: 'Cavalryman', //Testing value
 			classChance: '', //25% Fighter
 			statReq: ['str', 9],
 			primarySkills: ['Riding'],
@@ -446,7 +489,7 @@ const vocationCharacteristics = {
 	
 	patrician : {
 		patrician : {
-			name: "Patrician",
+			name: 'Patrician',
 			classChance: '', //25% Fighter
 			primarySkills: ['Diplomacy'],
 			secondarySkills: ['Art', 'Gambling', 'Intimidation', 'Knowledge', 'Language', 'Leadership', 'Military strategy', 'Profession', 'Riding', 'Seduction', 'Theology']
@@ -529,17 +572,34 @@ function pickName(ethnicity, gender){
 	return name
 }
 
+function newVocation(jobName) {
+	
+}
+
 function pickVocation(){
 	let shortList = vocationCategoryList;
 	let longList = vocationList;
-	let cat = pick(shortList);
-	let job = pick(longList[cat]);
+	let cat = pick(shortList); //Randomly select a category
+	console.log(cat);
+	let job = pick(longList[cat]); //Randomly select a vocation within that category.
+	console.log(job);
+	let a;
 	
-	//alert(cat);
-	//alert(job);
-	return job;
+	//If there is no such specific vocation within the category, pull name from category defaults.
+	if ( vocationCharacteristics[cat][job] == undefined ){
+		a = vocationCharacteristics[cat].name;
+	}
+	//Otherwise, use specific vocation name
+	else {
+		
+		a = vocationCharacteristics[cat][job].name;
+	}
+	alert(a);
 	
+	return job;	
 }
+
+
 
 testButton.addEventListener('click', Character);
 //testButton.addEventListener('click', function(){pickVocation()});
