@@ -123,7 +123,7 @@ const vocationList = {
 const vocationCharacteristics = {
 	laborer : {
 		primarySkills: ['Labor ()', 'Endurance'],
-		secondarySkills: [],
+		secondarySkills: [''],
 		
 		cook : {
 			name : 'Cook',
@@ -352,7 +352,7 @@ const vocationCharacteristics = {
 		musician : {
 			name: 'Carouser',
 			classChance: '', //25% Bard
-			primarySkills: [],
+			primarySkills: [''],
 			secondarySkills: ['Diplomacy','Lip reading','Performance','Seduction','Gambling']
 		},
 	},
@@ -367,7 +367,7 @@ const vocationCharacteristics = {
 			name: 'Footman', //Testing value
 			classChance: '', //25% Fighter
 			statReq: ['str', 9],
-			primarySkills: [],
+			primarySkills: [''],
 			secondarySkills: ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Riding', 'Seafaring', 'Siege engineering', 'Survival']
 		},
 		cavalryman: {
@@ -386,7 +386,7 @@ const vocationCharacteristics = {
 	minorEcclesiastic : {
 		anchorite: {
 			name: 'Anchorite',
-			primarySkills: [],
+			primarySkills: [''],
 			secondarySkills: ['Blind fighting', 'Knowledge', 'Sensing power', 'Theology']
 		},
 		oracle: {
@@ -426,7 +426,7 @@ const vocationCharacteristics = {
 		},
 		cultistHeretic : {
 			name: 'Cultist/Heretic',
-			primarySkills: [],
+			primarySkills: [''],
 			secondarySkills: ['Alchemy', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying', 'Theology']
 		},
 	},
@@ -478,7 +478,7 @@ const vocationCharacteristics = {
 		},
 		apprenticeWarlock : {
 			name: 'Apprentice warlock',
-			primarySkills: [],
+			primarySkills: [''],
 			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Theology']
 		}
 	},
@@ -583,20 +583,32 @@ function pickVocation(){
 	console.log(cat);
 	let job = pick(longList[cat]); //Randomly select a vocation within that category.
 	console.log(job);
-	let a;
 	
+	//
+	let skills = vocationCharacteristics[cat][job].primarySkills;
+	if ( vocationCharacteristics[cat][job].primarySkills == undefined ){
+		skills = vocationCharacteristics[cat].primarySkills;
+	}
+	//Otherwise, use specific vocation skills
+	else {
+		
+		skills = vocationCharacteristics[cat][job].primarySkills;
+	}
+	console.log(skills);
+	
+	
+	let jobName;
 	//If there is no such specific vocation within the category, pull name from category defaults.
 	if ( vocationCharacteristics[cat][job] == undefined ){
-		a = vocationCharacteristics[cat].name;
+		jobName = vocationCharacteristics[cat].name;
 	}
 	//Otherwise, use specific vocation name
 	else {
 		
-		a = vocationCharacteristics[cat][job].name;
+		jobName = vocationCharacteristics[cat][job].name;
 	}
-	alert(a);
 	
-	return job;	
+	return jobName;	
 }
 
 
