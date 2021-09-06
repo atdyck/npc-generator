@@ -217,63 +217,48 @@ function choosemerchant() {
 	return [title+' '+nm, , classed, prim, sec]; //[rank+name, statReq, classChance, primarySkills, secondarySkills]
 };
 
-function choosespecialist(){
-	let list = vocationList.specialist;
-	let rankList = merchantRanks;
-	let nm;
-	let title;
-	let req;
-	let classed;
-	let prim;
-	let sec;
-	let rankPrinted;
+function choosespecialist() {
+	let vocationName = pick(vocationList.specialist);
+	// vocationName = 'marshal';
+	let {
+		name,
+		statReq,
+		classChance,
+		primarySkills,
+		secondarySkills,
+		ranks,
+	} = vocationCharacteristics[vocationName];
 
-	//let a = pick(list);
-	a = 'sage';
-	nm = vocationCharacteristics[a].name;
-	req = vocationCharacteristics[a].statReq;
-	classed = vocationCharacteristics[a].classChance;
-	prim = vocationCharacteristics[a].primarySkills;
-	sec = vocationCharacteristics[a].secondarySkills;
-	
-	if (a == 'marshal'){
-		let marshalType = pickWithRank(vocationCharacteristics.marshal.ranks);
-		title = marshalType[0];
-		let marshalSkills = marshalType.splice(2,10);
-		prim = prim.concat(marshalSkills);
-		nm = title+' '+nm;
-	}
-	else {
-		if (vocationCharacteristics[a].ranks !== undefined){
-			let array = pickWithRank(vocationCharacteristics[a].ranks); //Pick a rank from the weighted list. Returns an array of [Title, weight, ranks of proficiency]
-			title = array[0]; //Returns the title from the first position of the array
-			let rnk = array[2]; //Returns the number of proficiency ranks from the third position of the array
+	if (vocationName === 'marshal') {
+		let marshalType = pickWithRank(ranks);
+		let [title, , marshalSkills] = marshalType;
+		let allPrimarySkills = [...primarySkills, ...marshalSkills];
+		let rankedName = title+' '+name;
+		
+		return [rankedName, statReq, classChance, allPrimarySkills, secondarySkills];
+	} else {
+		let finalName = name;
+		let finalPrimarySkills = [...primarySkills];
+
+		if (ranks !== undefined){
+			let [title, , rnk] = pickWithRank(ranks);
+			finalName = title + ' ' + name;
 			
-			//Formats rankPrinted so that it is blank if only one proficiency rank, since a number should only be printed if higher than 1.
-			if (rnk == 1) {
-				rankPrinted = ''		
-			} else {
-				rankPrinted = ' '+rnk
+			let [rankedSkill, ...otherSkills] = primarySkills;
+			if (rnk > 1) {
+				rankedSkill = rankedSkill + ' ' + rnk;
 			}
-			nm = title+' '+nm
+
+			finalPrimarySkills = [rankedSkill, ...otherSkills];
 			
-			prim.splice(0,1,prim[0]+rankPrinted);
-			
-			if (a == 'sage' && rnk == 3){
-				classed = ['mage', 25]
+			if (vocationName === 'sage' && rnk === 3){
+				classChance = ['mage', 25]
 			};
 		}
+		
+		return [finalName, statReq, classChance, finalPrimarySkills, secondarySkills];
 	};
-	
-	
-	
-	console.log(nm);
-	console.log(req);
-	console.log(classed);
-	console.log(prim);
-	console.log(sec);
-	return [nm, req, classed, prim, sec]; //[rank+name, statReq, classChance, primarySkills, secondarySkills]
-	};
+};
 
 
 const vocationCharacteristics = {
@@ -419,7 +404,15 @@ const vocationCharacteristics = {
 	marshal : { 
 		name: 'marshal', //Lower case because it will be preceded by the type of marshal
 		statReq: ['str', 9],
-		ranks: [['Light infantry',5],['Bowman',3,'Weapon focus (bows & crossbows)'],['Heavy infantry',3,'Manual of arms'],['Light cavalry',3,'Riding'],['Heavy cavalry',1,'Riding','Manual of arms'],['Horse archer',1,'Riding','Weapon focus (bows & crossbows)'],['Cataphract',1,'Riding','Manual of arms','Weapon focus (bows & crossbows)']],
+		ranks: [
+			['Light infantry',5, []],
+			['Bowman',3,['Weapon focus (bows & crossbows)']],
+			['Heavy infantry',3,['Manual of arms']],
+			['Light cavalry',3,['Riding']],
+			['Heavy cavalry',1,['Riding','Manual of arms']],
+			['Horse archer',1,['Riding','Weapon focus (bows & crossbows)']],
+			['Cataphract',1,['Riding','Manual of arms','Weapon focus (bows & crossbows)']]
+		],
 		classChance: ['fighter', 100],
 		primarySkills: ['Manual of arms'],
 		secondarySkills: ['Endurance', 'Leadership', 'Military strategy', 'Command']
@@ -787,7 +780,11 @@ function pickVocation(){
 
 
 
-testButton.addEventListener('click', choosespecialist);
+testButton.addEventListener('click', () => {
+	for (const x of choosespecialist()) {
+		console.log(x);
+	}
+});
 //testButton.addEventListener('click', function(){pickVocation()});
 	
 </script>
