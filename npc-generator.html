@@ -13,18 +13,40 @@
 		
         <div id="content">
             <table border="1" id="table">
-                <tbody>
-                    <tr>
+                <theader>
+					<tr>
+						<th>Name</th>
+                        <th>Gender</th>
+						<th>Ethnicity</th>
+						<th>Vocation</th>
+						<th>STR</th>
+                        <th>DEX</th>
+						<th>CON</th>
+						<th>INT</th>
+						<th>WIS</th>
+						<th>CHA</th>
+					</tr>
+				</theader>
+				<tbody>
+                    <tr style="text-align:center">
                         <td class="normal" id="cell00">&nbsp;</td>
                         <td class="normal" id="cell01">&nbsp;</td>
                         <td class="normal" id="cell02">&nbsp;</td>
-                        <td class="red" id="cell03">&nbsp;</td>
+                        <td class="normal" id="cell03">&nbsp;</td>
+						<td class="normal" id="cell04">&nbsp;</td>
+                        <td class="normal" id="cell05">&nbsp;</td>
+						<td class="normal" id="cell06">&nbsp;</td>
+                        <td class="normal" id="cell07">&nbsp;</td>
+                        <td class="normal" id="cell08">&nbsp;</td>
+                        <td class="normal" id="cell09">&nbsp;</td>
+						<td class="normal" id="cell10">&nbsp;</td>
+                        <td class="normal" id="cell11">&nbsp;</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-	<input type="button" id="testButton" value="Test">
+	<input type="button" id="testButton" value="Test" onclick="finalizeProficiencies([proficiencyCharacteristics.alchemy, proficiencyCharacteristics.alchemy, 'alchemy', 'Craft (mason)'])">
 </center>
 
 <script>
@@ -52,16 +74,6 @@ const character = {
 	proficiencies: [],
 };
 
-// As above, kept as a reminder
-<!-- const vocation = { -->
-	<!-- name: '', //Name of the vocation -->
-	<!-- ranks: [], -->
-	<!-- statReq: [,], //Not sure how to implement this yet. -->
-	<!-- classChance: [,] //Chance that the NPC will have be a classed character -->
-	<!-- primarySkills: [], //Every character in this vocation receives these skills -->
-	<!-- secondarySkills: [], //A character may get skills chosen randomly from this list -->
-<!-- }; -->
-
 var rowButton = document.getElementById('rowButton'); 
 var testButton = document.getElementById('testButton');
 
@@ -74,6 +86,7 @@ const genderList = ['male', 'female']
 const vocationCategoryList = [['laborer',26],['crafter',34],['merchant',14],['specialist',2],['hosteller',5],['entertainer',2],['thief',2],['military',6],['fighter',2],['minorEcclesiastic',2],['cleric',1],['minorMagician',1],['mage',1],['patrician',1]]
 const crafterRanks = [['Apprentice',19,1],['Journeyman',10,2],['Master',5,3]] //['Name', frequency weight, ranks of relevent Craft proficiency]
 const merchantRanks = [['Apprentice',8,1],['Licensed',4,2],['Master',2,3]] //['Name', frequency weight, rank]
+const anyoneProficiencies = ['Bargaining', 'Diplomacy', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Lip reading', 'Seduction']
 
 const nameList = {
 	Tirenean : {
@@ -110,10 +123,10 @@ const vocationList = {
 	crafter : [['apothecary',2],['armorer',2],['baker',2],['blacksmith',2],['bookbinder',1],['bowyer/fletcher',2],['brewer',3],['brickmaker',2],['butcher',5],['cabinetmaker',1],['candlemaker',3],['capper/hatter',2],['carpenter',1],['chaloner/cordwainer',2],['clothmaker',6],['cobbler/cordwainer',2],['confectioner',2],['cooper',1],['coppersmith',2],['corder/ropemaker',1],['decorative artist',3],['florist',1],['gemcutter',1],['glassworker',2],['goldsmith',4],['hornworker',2],['illuminator',2],['jeweler',1],['locksmith',1],['mason',2],['parchmentmaker',1],['perfumer',1],['potter',3],['saddler/fuster',2],['scribe',4],['shipwright',1],['silversmith',1],['spinner',6],['tailor/seamstress',6],['tanner/tawer',4],['taxidermist',1],['tinker/toymaker',2],['wainwright',1],['weaponsmith',2],['wheelwright',1]],
 	merchant : [['bookseller',1],['chandler/upholder',5],['coppermonger',2],['cornmonger',12],['draper',11],['fishmonger',7],['fripperer',6],['furrier',2],['greengrocer',2],['horsemonger',4],['ironmonger',9],['lumbermonger',9],['mercer',5],['oilmonger',2],['peltmonger/skinner',6],['poulterer',3],['salter/pepperer',4],['vinter',5]],
 	specialist : [['alchemist',12],['animalTrainer',11],['artillerist',3],['engineer',11],['healer',11],['lawyer',5],['marshal',17],['navigator',5],['quartermaster',3],['sage',11],['scoutPathfinder',5],['scoutSurveyor',4],['siegeEngineer',3],['shipCaptain',3]],
-	hosteller : [['hosteller',95],['brothelkeeper',5]],
+	hosteller : [['cantinakeeper',60],['tavernkeeper',25],['innkeeper',10],['brothelkeeper',5]],
 	entertainer : [['actor',20],['musician',45],['dancer',42],['carouser',3]],
 	thief : [['thief',1]],
-	military : [['light foot',20],['heavy foot',45],['crossbow',42],['bowman',3],['longbowman',4],['light cavalry',5],['horse archer',6],['medium cavalry',7],['heavy cavalry',8],['cataphract',9]],
+	military : [['lightfoot',20],['heavyfoot',45],['crossbowman',42],['bowman',3],['longbowman',4],['lightcavalry',5],['horsearcher',6],['mediumcavalry',7],['heavycavalry',8],['cataphract',9]],
 	fighter : [['fighter',1]],
 	minorEcclesiastic : [['anchorite',2],['oracle',8],['missionary',10],['villageWitch',15],['seminarian',30],['hospitalistMedician',25],['sacredCourtesan',10],['inquisitor',7],['cultistHeretic',12]],
 	cleric : [['cleric',1]],
@@ -124,142 +137,21 @@ const vocationList = {
 
 //Functions for each category. Should output [rank+name, statReq, classChance, primarySkills, secondarySkills]
 
-function chooselaborer() {
-	let list = vocationList.laborer;
-	let a = pick(list);
-	let nm;
-	let prim;
-	let sec;
-	console.log(a);
-	
-	if (a == 'cook' || a == 'stablehand' || a == 'sailor' || a == 'unskilledLaborer' || a == 'prostitute'){
-		console.log('true');
-		nm = vocationCharacteristics[a].name;
-		prim = vocationCharacteristics[a].primarySkills;
-		sec = vocationCharacteristics[a].secondarySkills;
-	} else {
-		console.log('false');
-		nm = vocationCharacteristics[a].name;
-		prim = ['Labor ('+vocationCharacteristics[a].jobNoun+')', 'Endurance'];
-		sec = [];
-	}
-	console.log(nm, prim, sec);
-	return [nm, , , prim, sec]; //[rank+name, statReq, classChance, primarySkills, secondarySkills]
+function FootmanVocation(name) {
+  this.name = name;
+  this.classChance = ['fighter', 25];
+  this.statReq = ['str',9];
+  this.primarySkills = [''];
+  this.secondarySkills = ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Seafaring', 'Siege engineering', 'Survival']
 };
 
-function choosecrafter() {
-	let list = vocationList.crafter;
-	let rankList = crafterRanks;
-	let nm;
-	let title;
-	let prim;
-	let sec;
-	
-	let a = pick(list); //Choose a crafter vocation
-	let b = a.replace(/^\w/, (z) => z.toUpperCase()); //Capitalize first letter of the vocation result
-	let c = b.replace(/(?<=\/)\w/, (z) => z.toUpperCase()); //Capitalize first letter after a /
-	nm = c; //Assign result of capitalization as the name variable nm
-	
-	
-	let array = pickWithRank(rankList); //Pick a craftsman rank from the weighted list. Returns an array of [Title, weight, ranks of proficiency]
-	title = array[0]; //Returns the title from the first position of the array
-	let rnk = array[2]; //Returns the number of proficiency ranks from the third position of the array
-	let rankPrinted
-	
-	//Formats rankPrinted so that it is blank if only one proficiency rank, since a number should only be printed if higher than 1.
-	if (rnk == 1) {
-		rankPrinted = ''		
-	} else {
-		rankPrinted = ' '+rnk
-	}
-	
-	prim = ['Craft ('+a+')'+rankPrinted];
-	sec = ['Bargaining', 'Endurance'];
-
-	console.log(title+' '+nm, prim, sec);
-	return [title+' '+nm, , , prim, sec] //[rank+name, statReq, classChance, primarySkills, secondarySkills]
+function HorsemanVocation(name) {
+  this.name = name;
+  this.classChance = ['fighter', 25];
+  this.statReq = ['str',9];
+  this.primarySkills = ['Riding'];
+  this.secondarySkills = ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Seafaring', 'Siege engineering', 'Survival']
 };
-
-function choosemerchant() {
-	let list = vocationList.merchant;
-	let rankList = merchantRanks;
-	let nm;
-	let title;
-	let classed;
-	let prim;
-	let sec;
-	let bonusProfs;
-	
-	let a = pick(list); //Choose a merchant vocation
-	let b = a.replace(/^\w/, (z) => z.toUpperCase()); //Capitalize first letter of the vocation result
-	let c = b.replace(/(?<=\/)\w/, (z) => z.toUpperCase()); //Capitalize first letter after a /
-	nm = c; //Assign result of capitalization as the name variable nm
-	
-	let array = pickWithRank(rankList); //Pick a craftsman rank from the weighted list. Returns an array of [Title, weight, ranks of proficiency]
-	title = array[0]; //Returns the title from the first position of the array
-	let rnk = array[2]; //Returns the number of proficiency ranks from the third position of the array
-	
-	prim = ['Bargaining']
-	sec = ['Bargaining', 'Craft', 'Diplomacy', 'Language', 'Navigation', 'Riding', 'Seafaring']
-	bonusProfs = rnk - 1 //Number of secondary skills character will get due to rank
-	
-	//For each bonus prof, add one from the secondary list to the primary list
-	for (let i = bonusProfs; i > 0; i--) {
-		let d = sec[Math.floor(Math.random()*sec.length)];
-		prim.push(d);
-	};
-	
-	if (rnk == 3){
-		classed = ['venturer', 25]
-	};
-	
-	console.log(title+' '+nm, classed, prim, sec);
-	return [title+' '+nm, , classed, prim, sec]; //[rank+name, statReq, classChance, primarySkills, secondarySkills]
-};
-
-function choosespecialist() {
-	let vocationName = pick(vocationList.specialist);
-	// vocationName = 'marshal';
-	let {
-		name,
-		statReq,
-		classChance,
-		primarySkills,
-		secondarySkills,
-		ranks,
-	} = vocationCharacteristics[vocationName];
-
-	if (vocationName === 'marshal') {
-		let marshalType = pickWithRank(ranks);
-		let [title, , marshalSkills] = marshalType;
-		let allPrimarySkills = [...primarySkills, ...marshalSkills];
-		let rankedName = title+' '+name;
-		
-		return [rankedName, statReq, classChance, allPrimarySkills, secondarySkills];
-	} else {
-		let finalName = name;
-		let finalPrimarySkills = [...primarySkills];
-
-		if (ranks !== undefined){
-			let [title, , rnk] = pickWithRank(ranks);
-			finalName = title + ' ' + name;
-			
-			let [rankedSkill, ...otherSkills] = primarySkills;
-			if (rnk > 1) {
-				rankedSkill = rankedSkill + ' ' + rnk;
-			}
-
-			finalPrimarySkills = [rankedSkill, ...otherSkills];
-			
-			if (vocationName === 'sage' && rnk === 3){
-				classChance = ['mage', 25]
-			};
-		}
-		
-		return [finalName, statReq, classChance, finalPrimarySkills, secondarySkills];
-	};
-};
-
 
 const vocationCharacteristics = {
 	
@@ -271,8 +163,8 @@ const vocationCharacteristics = {
 	},
 	stablehand : {
 		name: 'Hostler/Stablehand',
-		primarySkills: ['Labor (mucking)'], //Every character in this vocation receives these skills
-		secondarySkills: ['Animal husbandry', 'Endurance', 'Riding'], //A character may get skills chosen randomly from this list
+		primarySkills: ['Labor (mucking)', 'Endurance'], //Every character in this vocation receives these skills
+		secondarySkills: ['Animal husbandry', 'Riding'], //A character may get skills chosen randomly from this list
 	},
 	prostitute : {
 		name: 'Prostitute',
@@ -292,63 +184,63 @@ const vocationCharacteristics = {
 	
 	barber : {
 		name: 'Barber',
-		jobNoun: 'barbery'
+		primarySkills: ['Labor (barbery)', 'Endurance']
 	},
 	bathAttendant : {
 		name: 'Bath attendant/Masseuse',
-		jobNoun: 'bath attending/massage'
+		primarySkills: ['Labor (bath attending/massage', 'Endurance']
 	},
 	bricklayer : {
 		name: 'Bricklayer',
-		jobNoun: 'brick laying'
+		primarySkills: ['Labor (brick laying)', 'Endurance']
 	},
 	dockworker : {
 		name: 'Dockworker',
-		jobNoun: 'dockworking'
+		primarySkills: ['Labor (dockworking)', 'Endurance']
 	},
 	launderer : {
 		name: 'Fuller/Launderer',
-		jobNoun: 'fulling/laundering'
+		primarySkills: ['Labor (fulling/laundering)', 'Endurance']
 	},
 	rower : {
 		name: 'Gondolier/Rower',
-		jobNoun: 'rowing'
+		primarySkills: ['Labor (rowing)', 'Endurance']
 	},
 	streetcleaner : {
 		name: 'Streetcleaner',
-		jobNoun: 'streetcleaning'
+		primarySkills: ['Labor (streetcleaning)', 'Endurance']
 	},
 	hawker : {
 		name: 'Hawker',
-		jobNoun: 'hawking'
+		primarySkills: ['Labor (hawking)', 'Endurance']
 	},
 	maidservant : {
 		name: 'Maidservant',
-		jobNoun: 'serving'
+		primarySkills: ['Labor (serving)', 'Endurance']
 	},
 	ratcatcher : {
 		name: 'Ratcatcher',
-		jobNoun: 'ratcatching'
+		primarySkills: ['Labor (ratcatching)', 'Endurance']
 	},
 	roofer : {
 		name: 'Roofer/Tiler',
-		jobNoun: 'roofing/tiling'
+		primarySkills: ['Labor (roofing/tiling)', 'Endurance']
 	},
 	scullion : {
 		name: 'Scullion',
-		jobNoun: 'drudgery'
+		primarySkills: ['Labor (drudgery)', 'Endurance']
 	},
 	woodcutter : {
 		name: 'Sawyer/Woodcutter',
-		jobNoun: 'sawing/woodcutting'
+		primarySkills: ['Labor (sawing/woodcutting)', 'Endurance']
 	},
 	teamster : {
 		name: 'Teamster',
-		jobNoun: 'droving'
+		primarySkills: ['Labor (droving)', 'Endurance']
 	},
 	tavernworker : {
 		name: 'Tavernworker',
-		jobNoun: 'serving'
+		primarySkills: ['Labor (serving)', 'Endurance']
 	},
 		
 	
@@ -384,7 +276,7 @@ const vocationCharacteristics = {
 		ranks: [['Apprentice',6,1],['Assistant',3,2],['Master',2,4]],
 		classChance: ['dwarvenMachinist', 1], //1% Dwarven Machinist
 		primarySkills: ['Engineering'],
-		secondarySkills: ['Knowledge (architecture)', 'Craft'],
+		secondarySkills: ['Knowledge (architecture)', 'Craft (mason)', 'Craft (carpenter)', 'Craft (shipwright)'],
 	},
 	healer : {
 		name: 'healer',
@@ -462,67 +354,89 @@ const vocationCharacteristics = {
 		secondarySkills: ['Bargaining', 'Diplomacy', 'Endurance', 'Intimidation', 'Language', 'Military strategy', 'Navigation', 'Seduction']
 	},
 	
-	hosteller : {
-		hosteller : {
-			name: 'Hosteller', //Testing value
-			ranks: [['Cantinakeeper',12,1],['Tavernkeeper',5,2],['Innkeeper',2,3]],
-			primarySkills: ['Profession (eatery management)'],
-			secondarySkills: ['Craft (cooking)', 'Intimidation', 'Lip reading']
-		},
-		brotherkeeper : {
-			name: 'Brothelkeeper',
-			statReq: ['dex',9],
-			primarySkills: ['Profession (brothel management)', 'Profession (brothel management)'],
-			secondarySkills: ['Bargaining','Eavesdropping', 'Intimidation', 'Lip reading', 'Seduction'],
-		},
+	//Hosteller
+	cantinakeeper : {
+		name: 'Cantinakeeper',
+		classChance: [pick([['fighter',1],['thief',1]]), 5],
+		primarySkills: ['Profession (eatery management)'],
+		secondarySkills: ['Craft (cooking)', 'Intimidation', 'Lip reading']
+	},
+	tavernkeeper : {
+		name: 'Tavernkeeper',
+		classChance: [pick([['fighter',1],['thief',1]]), 15],
+		primarySkills: ['Profession (eatery management)', 'Profession (eatery management)'],
+		secondarySkills: ['Craft (cooking)', 'Intimidation', 'Lip reading']
+	},
+	innkeeper : {
+		name: 'Innkeeper', 
+		classChance: [pick([['fighter',1],['thief',1]]), 15],
+		primarySkills: ['Profession (eatery management)', 'Profession (eatery management)', 'Profession (eatery management)'],
+		secondarySkills: ['Craft (cooking)', 'Intimidation', 'Lip reading']
+	},
+	brothelkeeper : {
+		name: 'Brothelkeeper',
+		classChance: ['thief', 100],
+		statReq: ['dex',9],
+		primarySkills: ['Profession (brothel management)', 'Profession (brothel management)'],
+		secondarySkills: ['Bargaining','Eavesdropping', 'Intimidation', 'Lip reading', 'Seduction'],
 	},
 	
-	entertainer : {
-		actor : {
-			name: 'Actor',
-			classChance: '', //25% Bard
-			ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
-			primarySkills: ['Performance (acting)'],
-			secondarySkills: ['Bargaining', 'Disguise', 'Craft', 'Performance (instrument)']
-		},
-		musician : {
-			name: 'Musician',
-			classChance: '', //25% Bard
-			ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
-			primarySkills: ['Performance (instrument)'],
-			secondarySkills: ['Bargaining', 'Disguise', 'Knowledge (music history)', 'Performance (other instrument)']
-		},
-		dancer : {
-			name: 'Dancer',
-			classChance: '', //25% Bard
-			ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
-			primarySkills: ['Performance (dancing)'],
-			secondarySkills: ['Bargaining', 'Disguise', 'Seduction', 'Endurance']
-		},
-		musician : {
-			name: 'Carouser',
-			classChance: '', //25% Bard
-			primarySkills: [''],
-			secondarySkills: ['Diplomacy','Lip reading','Performance','Seduction','Gambling']
-		},
+	//Entertainer
+	actor : {
+		name: 'Actor',
+		classChance: ['bard',25],
+		ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
+		primarySkills: ['Performance (acting)'],
+		secondarySkills: ['Bargaining', 'Disguise', 'Craft', 'Performance (instrument)']
 	},
-	
+	musician : {
+		name: 'Musician',
+		classChance: ['bard',25],
+		ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
+		primarySkills: ['Performance (instrument)'],
+		secondarySkills: ['Bargaining', 'Disguise', 'Knowledge (music history)', 'Performance (other instrument)']
+	},
+	dancer : {
+		name: 'Dancer',
+		classChance: ['bard',25],
+		ranks: [['Apprentice',11,1],['Journeyman',5,2],['Master',4,3]],
+		primarySkills: ['Performance (dancing)'],
+		secondarySkills: ['Bargaining', 'Disguise', 'Seduction', 'Endurance']
+	},
+	carouser : {
+		name: 'Carouser',
+		classChance: ['bard',25],
+		primarySkills: [''],
+		secondarySkills: ['Diplomacy','Lip reading','Performance','Seduction','Gambling']
+	},
+
 	thief : {
 		thief : '' //Generate Thief
 	},
 	
-	//COME BACK TO THIS ONE. Make each type of soldier a seperate entry, or somehow meld them together?
+	//Military
+	lightfoot : new FootmanVocation('Light footman'),
+	heavyfoot : new FootmanVocation('Heavy footman'),
+	crossbowman : new FootmanVocation('Crossbowman'),
+	bowman : new FootmanVocation('Bowman'),
+	longbowman : new FootmanVocation('Longbowman'),
+	lightcavalry : new HorsemanVocation('Light cavalryman'),
+	horsearcher : new HorsemanVocation('Horse archer'),
+	mediumcavalry : new HorsemanVocation('Medium cavalryman'),
+	heavycavalry : new HorsemanVocation('Heavy cavalryman'),
+	cataphract : new HorsemanVocation('Cataphract'),
+
 	military : {
 		footman: {
 			name: 'Footman', //Testing value
-			classChance: '', //25% Fighter
+			classChance: ['fighter',25],
 			statReq: ['str', 9],
 			primarySkills: [''],
 			secondarySkills: ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Riding', 'Seafaring', 'Siege engineering', 'Survival']
 		},
 		cavalryman: {
 			name: 'Cavalryman', //Testing value
-			classChance: '', //25% Fighter
+			classChance: ['fighter',25],
 			statReq: ['str', 9],
 			primarySkills: ['Riding'],
 			secondarySkills: ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Seafaring', 'Siege engineering', 'Survival']
@@ -533,104 +447,115 @@ const vocationCharacteristics = {
 		fighter : '' //Generate Fighter
 	},
 	
-	minorEcclesiastic : {
-		anchorite: {
-			name: 'Anchorite',
-			primarySkills: [''],
-			secondarySkills: ['Blind fighting', 'Knowledge', 'Sensing power', 'Theology']
-		},
-		oracle: {
-			name: 'Oracle',
-			primarySkills: ['Prophecy'],
-			secondarySkills: ['Knowledge', 'Language', 'Military strategy', 'Naturalism', 'Theology']
-		},
-		missionary: {
-			name: 'Almsgiver/Missionary',
-			primarySkills: ['Bargaining','Performance (oration)'],
-			secondarySkills: ['Bribery', 'Diplomacy', 'Healing', 'Theology']
-		},
-		villageWitch : {
-			name: 'Village witch',
-			primarySkills: ['Village wisdom'],
-			secondarySkills: ['Alchemy', 'Craft', 'Healing', 'Naturalism', 'Seduction', 'Theology']
-		},
-		seminarian : {
-			name: 'Seminarian',
-			primarySkills: ['Theology'],
-			secondarySkills: ['Alchemy', 'Animal husbandry', 'Diplomacy', 'Healing', 'Knowledge', 'Loremastery', 'Naturalism']
-		},
-		hospitalistMedician : {
-			name: 'Hospitalist/Medican',
-			primarySkills: ['Healing'],
-			secondarySkills: ['Alchemy', 'Healing', 'Naturalism', 'Theology']
-		},
-		sacredCourtesan : {
-			name: 'Sacred courtesan',
-			primarySkills: ['Seduction'],
-			secondarySkills: ['Performance (dancing)','Endurance']
-		},
-		inquisitor : {
-			name: 'Inquisitor',
-			primarySkills: ['Sensing evil','Intimidation'],
-			secondarySkills: ['Diplomacy', 'Healing', 'Knowledge (history)', 'Profession (lawyer)', 'Theology']
-		},
-		cultistHeretic : {
-			name: 'Cultist/Heretic',
-			primarySkills: [''],
-			secondarySkills: ['Alchemy', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying', 'Theology']
-		},
+	//Minor Ecclesiastic
+	anchorite: {
+		name: 'Anchorite',
+		statReq: ['wis', 9],
+		primarySkills: [''],
+		secondarySkills: ['Blind fighting', 'Knowledge', 'Sensing power', 'Theology']
+	},
+	oracle: {
+		name: 'Oracle',
+		statReq: ['wis', 13],
+		primarySkills: ['Prophecy'],
+		secondarySkills: ['Knowledge', 'Language', 'Military strategy', 'Naturalism', 'Theology']
+	},
+	missionary: {
+		name: 'Almsgiver/Missionary',
+		primarySkills: ['Bargaining','Performance (oration)'],
+		secondarySkills: ['Bribery', 'Diplomacy', 'Healing', 'Theology']
+	},
+	villageWitch : {
+		name: 'Village witch',
+		statReq: ['wis', 9],
+		primarySkills: ['Village wisdom'],
+		secondarySkills: ['Alchemy', 'Craft', 'Healing', 'Naturalism', 'Seduction', 'Theology']
+	},
+	seminarian : {
+		name: 'Seminarian',
+		statReq: ['int', 9],
+		primarySkills: ['Theology'],
+		secondarySkills: ['Alchemy', 'Animal husbandry', 'Diplomacy', 'Healing', 'Knowledge', 'Loremastery', 'Naturalism']
+	},
+	hospitalistMedician : {
+		name: 'Hospitalist/Medician',
+		primarySkills: ['Healing'],
+		secondarySkills: ['Alchemy', 'Healing', 'Naturalism', 'Theology']
+	},
+	sacredCourtesan : {
+		name: 'Sacred courtesan',
+		statReq: ['cha', 13],
+		primarySkills: ['Seduction'],
+		secondarySkills: ['Performance (dancing)','Endurance', 'Performance (singing)']
+	},
+	inquisitor : {
+		name: 'Inquisitor',
+		primarySkills: ['Sensing evil','Intimidation'],
+		secondarySkills: ['Diplomacy', 'Healing', 'Knowledge (history)', 'Profession (lawyer)', 'Theology']
+	},
+	cultistHeretic : {
+		name: 'Cultist/Heretic',
+		primarySkills: [''],
+		secondarySkills: ['Alchemy', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying', 'Theology']
 	},
 	
 	cleric : {
 		cleric: '' //Generate Cleric
 	},
 	
-	minorMagician : {
-		augur : {
-			name: 'Augur',
-			primarySkills: ['Prophecy'],
-			secondarySkills: ['Knowledge', 'Language', 'Military strategy', 'Naturalism', 'Theology']
-		},
-		occultist : {
-			name: 'Occultist',
-			primarySkills: ['Knowledge (occult)'],
-			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying']
-		},
-		astrologer : {
-			name: 'Astrologer',
-			primarySkills: ['Knowledge (astrology)', 'Knowledge (astrology)'],
-			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Knowledge (astrology)', 'Loremastery', 'Magical engineering', 'Prophecy']
-		},
-		hedgeMagician : {
-			name: 'Hedge magician',
-			primarySkills: ['Hedge wizardry'],
-			secondarySkills: ['Alchemy', 'Craft', 'Diplomacy', 'Healing', 'Language', 'Mapping', 'Naturalism', 'Prestidigitation']
-		},
-		apprenticeMage : {
-			name: 'Apprentice mage',
-			primarySkills: ['Collegiate wizardry'],
-			secondarySkills: ['Alchemy', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Profession']
-		},
-		prestidigitator : {
-			name: 'Prestidigitator',
-			primarySkills: ['Prestidigitation'],
-			secondarySkills: ['Performance', 'Collegiate Wizardry', 'Hedge Wizardry']
-		},
-		charlatan : {
-			name: 'Charlatan',
-			primarySkills: ['Profession (huckster)'],
-			secondarySkills: ['Alchemy', 'Bargaining', 'Disguise', 'Mimicry', 'Prestidigitation']
-		},
-		failedApprentice : {
-			name: 'Failed apprentice',
-			primarySkills: ['Collegiate wizardry'],
-			secondarySkills: ['Arcane dabbling', 'Alchemy', 'Gambling', 'Intimidation', 'Knowledge', 'Seduction']
-		},
-		apprenticeWarlock : {
-			name: 'Apprentice warlock',
-			primarySkills: [''],
-			secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Theology']
-		}
+	//Minor magician
+	augur : {
+		name: 'Augur',
+		primarySkills: ['Prophecy'],
+		secondarySkills: ['Knowledge', 'Language', 'Military strategy', 'Naturalism', 'Theology']
+	},
+	occultist : {
+		name: 'Occultist',
+		statReq: ['int', 9],
+		primarySkills: ['Knowledge (occult)'],
+		secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Diplomacy', 'Knowledge', 'Performance', 'Seduction', 'Soothsaying']
+	},
+	astrologer : {
+		name: 'Astrologer',
+		statReq: ['int', 9],
+		primarySkills: ['Knowledge (astrology)', 'Knowledge (astrology)'],
+		secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Knowledge (astrology)', 'Loremastery', 'Magical engineering', 'Prophecy']
+	},
+	hedgeMagician : {
+		name: 'Hedge magician',
+		statReq: ['int', 9],
+		primarySkills: ['Hedge wizardry'],
+		secondarySkills: ['Alchemy', 'Craft', 'Diplomacy', 'Healing', 'Language', 'Mapping', 'Naturalism', 'Prestidigitation']
+	},
+	apprenticeMage : {
+		name: 'Apprentice mage',
+		statReq: ['int', 9],
+		primarySkills: ['Collegiate wizardry'],
+		secondarySkills: ['Alchemy', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Profession']
+	},
+	prestidigitator : {
+		name: 'Prestidigitator',
+		statReq: ['int', 9],
+		primarySkills: ['Prestidigitation'],
+		secondarySkills: ['Performance', 'Collegiate Wizardry', 'Hedge Wizardry']
+	},
+	charlatan : {
+		name: 'Charlatan',
+		statReq: ['cha', 9],
+		primarySkills: ['Profession (huckster)'],
+		secondarySkills: ['Alchemy', 'Bargaining', 'Disguise', 'Mimicry', 'Prestidigitation']
+	},
+	failedApprentice : {
+		name: 'Failed apprentice',
+		statReq: ['int', 9],
+		primarySkills: ['Collegiate wizardry'],
+		secondarySkills: ['Arcane dabbling', 'Alchemy', 'Gambling', 'Intimidation', 'Knowledge', 'Seduction']
+	},
+	apprenticeWarlock : {
+		name: 'Apprentice warlock',
+		statReq: ['int', 9],
+		primarySkills: [''],
+		secondarySkills: ['Alchemy', 'Collegiate wizardry', 'Craft', 'Diplomacy', 'Engineering', 'Healing', 'Knowledge', 'Language', 'Loremastery', 'Theology']
 	},
 	
 	mage : {
@@ -638,17 +563,378 @@ const vocationCharacteristics = {
 	},
 	
 	patrician : {
-		patrician : {
-			name: 'Patrician',
-			classChance: '', //25% Fighter
-			primarySkills: ['Diplomacy'],
-			secondarySkills: ['Art', 'Gambling', 'Intimidation', 'Knowledge', 'Language', 'Leadership', 'Military strategy', 'Profession', 'Riding', 'Seduction', 'Theology']
-		}
+		name: 'Patrician',
+		classChance: ['fighter', 25],
+		primarySkills: ['Diplomacy'],
+		secondarySkills: ['Art', 'Gambling', 'Intimidation', 'Knowledge', 'Language', 'Leadership', 'Military strategy', 'Profession', 'Riding', 'Seduction', 'Theology']
 	},
 };
 
+const proficiencyCharacteristics = {
+	alchemy : {
+		name : 'Alchemy',
+		maxRanks : 3},
+	
+	animalHusbandry : {
+		name : 'Animal husbandry',
+		maxRanks : 3},
+	
+	art : {
+		name : 'Art',
+		maxRanks : 3},
+	
+	bargaining : {
+		name : 'Bargaining',
+		maxRanks : 8},
+	
+	craft : {
+		name : 'Craft',
+		maxRanks : 3},
+	
+	engineering : {
+		name : 'Engineering',
+		maxRanks : 4},
+	
+	gambling : {
+		name : 'Gambling',
+		maxRanks : 8},
+
+	healing : {
+		name : 'Healing',
+		maxRanks : 3},
+	
+	knowledge : {
+		name : 'Knowledge',
+		maxRanks : 3},
+	
+	manualOfArms : {
+		name : 'Manual of arms',
+		maxRanks : 2},
+	
+	militaryStrategy : {
+		name : 'Military strategy',
+		maxRanks : 3},
+	
+	naturalism : {
+		name : 'Naturalism',
+		maxRanks : 8},
+
+	performance : {
+		name : 'Performance',
+		maxRanks : 3},
+
+	profession : {
+		name : 'Profession',
+		maxRanks : 3},
+
+	seafaring : {
+		name : 'Seafaring',
+		maxRanks : 3},
+
+	siegeEngineering : {
+		name : 'Siege engineering',
+		maxRanks : 2},
+
+	theology : {
+		name : 'Theology',
+		maxRanks : 8},
+
+}
+
+const chooseFunctionsDirectory = {
+	laborer : function(){return chooselaborer()},
+	crafter : function(){return choosecrafter()},
+	merchant : function(){return choosemerchant()},
+	specialist : function(){return choosespecialist()},
+	hosteller : function(){return choosehosteller()},
+	entertainer : function(){return chooseentertainer()},
+	thief : function(){return chooseClassed('thief')},		//placeholder
+	military : function(){return choosemilitary()},
+	fighter : function(){return chooseClassed('fighter')},		//placeholder
+	minorEcclesiastic : function(){return chooseminorEcclesiastic()},
+	cleric : function(){return chooseClassed('thief')},		//placeholder
+	minorMagician : function(){return chooseminorMagician()},
+	mage : function(){return chooseClassed('mage')},		//placeholder
+	patrician : function(){return choosepatrician()},
+}
+
+function chooselaborer() {
+	let list = vocationList.laborer;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+	if (sec == null){
+		sec = [];
+	};
+	return {
+		name : nm,
+		statReq : null,
+		classChance : null,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+};
+
+function choosecrafter() {
+	let list = vocationList.crafter;
+	let rankList = crafterRanks;
+	let nm;
+	let title;
+	let prim = [];
+	let sec;
+	
+	let a = pick(list); //Choose a crafter vocation
+	nm = a;
+	//let b = a.replace(/^\w/, (z) => z.toUpperCase()); //Capitalize first letter of the vocation result
+	//let c = b.replace(/(?<=\/)\w/, (z) => z.toUpperCase()); //Capitalize first letter after a /
+	//nm = c; //Assign result of capitalization as the name variable nm
+	
+	
+	let array = pickWithRank(rankList); //Pick a craftsman rank from the weighted list. Returns an array of [Title, weight, ranks of proficiency]
+	title = array[0]; //Returns the title from the first position of the array
+	let rnk = array[2]; //Returns the number of proficiency ranks from the third position of the array
+
+	
+	for (let i = rnk; i > 0; i--){
+            prim.push('Craft ('+a+')')
+    }
+
+	sec = ['Bargaining', 'Endurance'];
+
+	return {
+		name : title + ' ' + nm,
+		statReq : null,
+		classChance : null,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+};
+
+function choosemerchant() {
+	let list = vocationList.merchant;
+	let rankList = merchantRanks;
+	let nm;
+	let title;
+	let classed = null;
+	let prim;
+	let sec;
+	let bonusProfs;
+	
+	let a = pick(list); //Choose a merchant vocation
+	nm = a;
+	// let b = a.replace(/^\w/, (z) => z.toUpperCase()); //Capitalize first letter of the vocation result
+	// let c = b.replace(/(?<=\/)\w/, (z) => z.toUpperCase()); //Capitalize first letter after a /
+	// nm = c; //Assign result of capitalization as the name variable nm
+	
+	let array = pickWithRank(rankList); //Pick a craftsman rank from the weighted list. Returns an array of [Title, weight, ranks of proficiency]
+	title = array[0]; //Returns the title from the first position of the array
+	let rnk = array[2]; //Returns the number of proficiency ranks from the third position of the array
+	
+	prim = ['Bargaining']
+	sec = ['Bargaining', 'Craft', 'Diplomacy', 'Language', 'Navigation', 'Riding', 'Seafaring']
+	bonusProfs = rnk - 1 //Number of secondary skills character will get due to rank
+	
+	//For each bonus prof, add one from the secondary list to the primary list
+	for (let i = bonusProfs; i > 0; i--) {
+		let d = sec[Math.floor(Math.random()*sec.length)];
+		prim.push(d);
+	};
+	
+	if (rnk == 3){
+		classed = ['venturer', 25]
+	};
+	
+	return {
+		name : title+' '+nm,
+		statReq : null,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+};
+
+function choosespecialist() {
+	let list = vocationList.specialist;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let stat = vocationCharacteristics[a].statReq;
+	let classed = vocationCharacteristics[a].classChance;
+	let ranks = vocationCharacteristics[a].ranks;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	let vocationName = pick(vocationList.specialist);
+
+	if (a == 'marshal') {
+		let marshalType = pickWithRank(ranks);
+		let title = marshalType[0];
+		prim = prim.concat(marshalType[2]);
+		//let allPrimarySkills = [...primarySkills, ...marshalSkills];
+		
+		return {
+		name : title + ' ' + nm,
+		statReq : stat,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec}
+	} 
+
+	if (ranks !== undefined){
+		let [title, , rnk] = pickWithRank(ranks);
+		nm = title + ' ' + nm;
+		
+		let [rankedSkill, ...otherSkills] = prim;
+		
+		let a = [];
+		for (let i = rnk; i > 0; i--){
+            a.push(rankedSkill)
+    	}
+
+		prim = a.concat(...otherSkills);
+		
+		if (vocationName === 'sage' && rnk === 3){
+			classed = ['mage', 25]
+		};
+	}
+	
+	return {
+		name : nm,
+		statReq : stat,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec}
+};
+
+function choosehosteller() {
+	let list = vocationList.hosteller;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let stat = vocationCharacteristics[a].statReq;
+	let classed = vocationCharacteristics[a].classChance;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	return {
+		name : nm,
+		statReq : stat,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+}
+
+function chooseentertainer(){
+	let list = vocationList.entertainer;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let classed = vocationCharacteristics[a].classChance;
+	let ranks = vocationCharacteristics[a].ranks;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	if (ranks !== undefined){
+		let [title, , rnk] = pickWithRank(ranks);
+		nm = title + ' ' + nm;
+		
+		let [rankedSkill, ...otherSkills] = prim;
+		if (rnk > 1) {
+			rankedSkill = rankedSkill + ' ' + rnk;
+		}
+
+		prim = [rankedSkill, ...otherSkills];
+	}
+
+	return {
+		name : nm,
+		statReq : null,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+}
+
+function choosemilitary(){
+	let list = vocationList.military;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let stat = vocationCharacteristics[a].statReq;
+	let classed = vocationCharacteristics[a].classChance;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	return {
+		name : nm,
+		statReq : stat,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+}
+
+function chooseminorEcclesiastic(){
+	let list = vocationList.minorEcclesiastic;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let stat = vocationCharacteristics[a].statReq;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	return {
+		name : nm,
+		statReq : stat,
+		classChance : null,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+}
+
+function chooseminorMagician(){
+	let list = vocationList.minorMagician;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let stat = vocationCharacteristics[a].statReq;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	return {
+		name : nm,
+		statReq : stat,
+		classChance : null,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+}
+
+function choosepatrician(){
+	let list = vocationList.patrician;
+	let a = pick(list);
+	let nm = vocationCharacteristics[a].name;
+	let classed = vocationCharacteristics[a].classChance;
+	let prim = vocationCharacteristics[a].primarySkills;
+	let sec = vocationCharacteristics[a].secondarySkills;
+
+	return {
+		name : nm,
+		statReq : null,
+		classChance : classed,
+		primarySkills : prim,
+		secondarySkills : sec
+	}
+}
+
+function chooseClassed(name){
+	return {
+		name : name,
+		statReq : null,
+		classChance : null,
+		primarySkills : null,
+		secondarySkills : null
+	}
+}
+
+//PROBABLY WON'T KEEP THIS. How many rows should be added, based on the number in the text box.
 function UpdateRows() {
-	//PROBABLY WON'T KEEP THIS. How many rows should be added, based on the number in the text box.
 	var neededRows = document.getElementById('numberRows').value;
 	
 	var currentRows = document.getElementById('table').rows.length;
@@ -681,11 +967,89 @@ function UpdateTable() {
 
 //Create character
 function Character(){
-	this.vocation = pickVocation();
-	this.ethnicity = pick(ethnicityList);
-	this.gender = genderList[Math.floor(Math.random()*genderList.length)];
-	this.name = pickName(this.ethnicity,this.gender);
-	alert(this.name + '\n' + this.gender + '\n' + this.ethnicity + '\n' + this.vocation);
+	let [str, dex, con, int, wis, cha] = [roll(3,6), roll(3,6), roll(3,6), roll(3,6), roll(3,6), roll(3,6)];
+	let vocation = pickVocation();
+	let ethnicity = pick(ethnicityList);
+	let gender = genderList[Math.floor(Math.random()*genderList.length)];
+	let name = pickName(ethnicity, gender);
+	let skills = vocation.primarySkills;
+	let secondaries = vocation.secondarySkills;
+
+	if (vocation.statReq != null){
+		min = vocation.statReq[1];
+
+		if(vocation.statReq[0] == 'str'){
+			for (true; str < min; true) {
+				str = roll(3,6);
+			};
+		};
+		if(vocation.statReq[0] == 'dex'){
+			for (true; dex < min; true) {
+				dex = roll(3,6);
+			};
+		};
+		if(vocation.statReq[0] == 'con'){
+			for (true; con < min; true) {
+				con = roll(3,6);
+			};
+		};
+		if(vocation.statReq[0] == 'int'){
+			for (true; int < min; true) {
+				int = roll(3,6);
+			};
+		};
+		if(vocation.statReq[0] == 'wis'){
+			for (true; wis < min; true) {
+				wis = roll(3,6);
+			};
+		};
+		if(vocation.statReq[0] == 'cha'){
+			for (true; cha < min; true) {
+				cha = roll(3,6);
+			};
+		};
+	};
+
+	//Fill in four base skills
+	for(let i = (4 - skills.length); i > 0; i--){
+		let num = roll(1,20);
+		if(num >= 13){
+			continue;
+		}
+		else if (num >= 9){
+			skills.push(secondaries[Math.floor(Math.random()*secondaries.length)]);
+			continue;
+		}
+		else{
+			skills.push(anyoneProficiencies[num - 1]);
+			continue;
+		}
+	}
+
+	let intBonus = 0;
+	if (int >= 18){intBonus = 3
+	}else if (int >= 16){intBonus = 2
+	}else if (int >= 13){intBonus = 1
+	}else {intBonus = 0};
+
+	for(let i = intBonus; i > 0; i--){
+		skills.push(secondaries[Math.floor(Math.random()*secondaries.length)]);
+		skills.filter(n => n);
+	}
+
+
+	document.getElementById('cell00').innerHTML = name;
+	document.getElementById('cell01').innerHTML = gender;
+	document.getElementById('cell02').innerHTML = ethnicity;
+	document.getElementById('cell03').innerHTML = vocation.name;
+	document.getElementById('cell04').innerHTML = str;
+	document.getElementById('cell05').innerHTML = dex;
+	document.getElementById('cell06').innerHTML = con;
+	document.getElementById('cell07').innerHTML = int;
+	document.getElementById('cell08').innerHTML = wis;
+	document.getElementById('cell09').innerHTML = cha;
+	document.getElementById('cell09').innerHTML = skills;
+	//console.log(name + '\n' + gender + '\n' + ethnicity + '\n' + vocation.name + '\n' + vocation.primarySkills + '\n' + vocation.secondarySkills);
 	}
 
 //Picks a random weighted result from a weighted list
@@ -743,50 +1107,66 @@ function pickName(ethnicity, gender){
 	return name
 }
 
+function roll(a, b)
+{
+	var sum = 0;
+	for (let i = a; i > 0; i--) {
+		let x = Math.floor((Math.random() * b) + 1);
+		sum = sum + x;
+	};
+	return sum;
+}
+
 function pickVocation(){
+	
 	let shortList = vocationCategoryList;
 	let longList = vocationList;
 	let cat = pick(shortList); //Randomly select a category
-	console.log(cat);
-	let job = pick(longList[cat]); //Randomly select a vocation within that category.
-	console.log(job);
+	//let job = pick(longList[cat]); //Randomly select a vocation within that category.
+	let characteristics = chooseFunctionsDirectory[cat]();
 	
-	//
-	let skills = vocationCharacteristics[cat][job].primarySkills;
-	if ( vocationCharacteristics[cat][job].primarySkills == undefined ){
-		skills = vocationCharacteristics[cat].primarySkills;
-	}
-	//Otherwise, use specific vocation skills
-	else {
-		
-		skills = vocationCharacteristics[cat][job].primarySkills;
-	}
-	console.log(skills);
-	
-	
-	let jobName;
-	//If there is no such specific vocation within the category, pull name from category defaults.
-	if ( vocationCharacteristics[cat][job] == undefined ){
-		jobName = vocationCharacteristics[cat].name;
-	}
-	//Otherwise, use specific vocation name
-	else {
-		
-		jobName = vocationCharacteristics[cat][job].name;
-	}
-	
-	return jobName;	
+	let skills = characteristics.primarySkills;	
+	let jobName = characteristics.name;
+	jobName = jobName.toLowerCase();
+	jobName = jobName.replace(/^\w/, (z) => z.toUpperCase()); //Capitalize first letter of the vocation result
+	characteristics.name = jobName;
+
+	return characteristics;	
 }
 
-
-
-testButton.addEventListener('click', () => {
-	for (const x of choosespecialist()) {
-		console.log(x);
-	}
-});
-//testButton.addEventListener('click', function(){pickVocation()});
+function finalizeProficiencies(skills){
+	//skills is an array with all of the skills it has, with repeats for multiple ranks
+	let consolidatedSkills = [];
+    var usedSkills = new Set();
 	
+	//Will run for each skill
+	for (let i = 0; i < skills.length; i++){
+		let currentSkill = skills[i];
+		let localMaxRanks = 1;
+		let currentSkillRank = 1;
+		console.log(currentSkill);
+		console.log(currentSkill.maxRanks);
+		if (proficiencyCharacteristics.currentSkill.maxRanks > 1){
+			localMaxRanks = proficiencyCharacteristics.currentSkill.maxRanks
+		}
+
+		if(usedSkills.has(currentSkill)){
+            continue;
+        }
+		usedSkills.add(currentSkill);
+
+		//Check the skill against others in the skills array, then add them together
+        for (let j = i; j < skills.length; j++){
+            if(currentSkill != skills[j]){
+                continue;
+            }
+            
+        }
+        
+
+    }
+}
+
 </script>
 
 </body>
