@@ -46,7 +46,7 @@
             </table>
         </div>
     </div>
-	<input type="button" id="testButton" value="Test" onclick="finalizeProficiencies([proficiencyCharacteristics.alchemy, proficiencyCharacteristics.alchemy, 'alchemy', 'Craft (mason)'])">
+	<input type="button" id="testButton" value="Test" onclick="finalizeProficiencies([profChar.alchemy, profChar.alchemy, 'alchemy', 'Craft (mason)'])">
 </center>
 
 <script>
@@ -80,13 +80,165 @@ var testButton = document.getElementById('testButton');
 
 rowButton.addEventListener('click', UpdateRows);
 
+const profChar = {
+	alchemy : {
+		name : 'Alchemy',
+		maxRanks : 3},
+	
+	animalHusbandry : {
+		name : 'Animal husbandry',
+		maxRanks : 3},
+	
+	animalTraining : {
+		name : 'Animal training',
+		maxRanks : 1},
+		
+	art : {
+		name : 'Art',
+		maxRanks : 3},
+	
+	bargaining : {
+		name : 'Bargaining',
+		maxRanks : 8},
+	
+	caving : {
+		name : 'Caving',
+		maxRanks : 1},
+	
+	collegiateWizardry : {
+		name : 'Collegiate Wizardry',
+		maxRanks : 1},
+
+	craft : {
+		name : 'Craft',
+		maxRanks : 3},
+	
+	diplomacy : {
+		name : 'Diplomacy',
+		maxRanks : 1},
+	
+	disguise : {
+		name : 'Disguise',
+		maxRanks : 1},
+
+	endurance : {
+		name : 'Endurance',
+		maxRanks : 1},
+
+	engineering : {
+		name : 'Engineering',
+		maxRanks : 4},
+	
+	gambling : {
+		name : 'Gambling',
+		maxRanks : 8},
+
+	healing : {
+		name : 'Healing',
+		maxRanks : 3},
+	
+	intimidation : {
+		name : 'Intimidation',
+		maxRanks : 1},
+	
+	knowledge : {
+		name : 'Knowledge',
+		maxRanks : 3},
+	
+	labor : {
+		name : 'Labor',
+		maxRanks : 1},
+	
+	language : {
+		name : 'Language',
+		maxRanks : 1},
+
+	leadership : {
+		name : 'Leadership',
+		maxRanks : 1},
+
+	lipReading : {
+		name : 'Lip Reading',
+		maxRanks : 1},
+
+	manualOfArms : {
+		name : 'Manual of arms',
+		maxRanks : 2},
+
+	mapping : {
+		name : 'Mapping',
+		maxRanks : 1},
+	
+	militaryStrategy : {
+		name : 'Military strategy',
+		maxRanks : 3},
+
+	mimicry : {
+		name : 'Mimicry',
+		maxRanks : 1},
+	
+	naturalism : {
+		name : 'Naturalism',
+		maxRanks : 8},
+
+	navigation : {
+		name : 'Navigation',
+		maxRanks : 8},
+
+	performance : {
+		name : 'Performance',
+		maxRanks : 3},
+
+	profession : {
+		name : 'Profession',
+		maxRanks : 3},
+
+	riding : {
+		name : 'Riding',
+		maxRanks : 8},
+
+	seafaring : {
+		name : 'Seafaring',
+		maxRanks : 3},
+
+	seduction : {
+		name : 'Seduction',
+		maxRanks : 1},
+
+	siegeEngineering : {
+		name : 'Siege engineering',
+		maxRanks : 2},
+
+	signaling : {
+		name : 'Signaling',
+		maxRanks : 1},
+
+	survival : {
+		name : 'Survival',
+		maxRanks : 1},
+
+	theology : {
+		name : 'Theology',
+		maxRanks : 8},
+	
+	tracking : {
+		name : 'Tracking',
+		maxRanks : 1},
+
+	trapping : {
+		name : 'Trapping',
+		maxRanks : 1},
+
+}
+
+
 //Various lists and weighted lists
 const ethnicityList = [['Tirenean',50],['Nicean',20],['Krysean',10],['Opelenean',10],['Dwarven',5],['Elven',5]]
 const genderList = ['male', 'female']
 const vocationCategoryList = [['laborer',26],['crafter',34],['merchant',14],['specialist',2],['hosteller',5],['entertainer',2],['thief',2],['military',6],['fighter',2],['minorEcclesiastic',2],['cleric',1],['minorMagician',1],['mage',1],['patrician',1]]
 const crafterRanks = [['Apprentice',19,1],['Journeyman',10,2],['Master',5,3]] //['Name', frequency weight, ranks of relevent Craft proficiency]
 const merchantRanks = [['Apprentice',8,1],['Licensed',4,2],['Master',2,3]] //['Name', frequency weight, rank]
-const anyoneProficiencies = ['Bargaining', 'Diplomacy', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Lip reading', 'Seduction']
+const anyoneProficiencies = [profChar.bargaining, profChar.diplomacy, profChar.endurance, profChar.gambling, profChar.intimidation, profChar.leadership, profChar.lipReading, profChar.seduction]
 
 const nameList = {
 	Tirenean : {
@@ -142,15 +294,15 @@ function FootmanVocation(name) {
   this.classChance = ['fighter', 25];
   this.statReq = ['str',9];
   this.primarySkills = [''];
-  this.secondarySkills = ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Seafaring', 'Siege engineering', 'Survival']
+  this.secondarySkills = [profChar.bargaining, profChar.dungeonBashing, profChar.endurance, profChar.gambling, profChar.intimidation, profChar.leadership, profChar.manualOfArms, profChar.militaryStrategy, profChar.seafaring, profChar.siegeEngineering, profChar.survival]
 };
 
 function HorsemanVocation(name) {
   this.name = name;
   this.classChance = ['fighter', 25];
   this.statReq = ['str',9];
-  this.primarySkills = ['Riding'];
-  this.secondarySkills = ['Bargaining', 'Dungeon bashing', 'Endurance', 'Gambling', 'Intimidation', 'Leadership', 'Manual of arms', 'Military strategy', 'Seafaring', 'Siege engineering', 'Survival']
+  this.primarySkills = [profChar.riding];
+  this.secondarySkills = [profChar.bargaining, profChar.dungeonBashing, profChar.endurance, profChar.gambling, profChar.intimidation, profChar.leadership, profChar.manualOfArms, profChar.militaryStrategy, profChar.seafaring, profChar.siegeEngineering, profChar.survival]
 };
 
 const vocationCharacteristics = {
@@ -158,89 +310,89 @@ const vocationCharacteristics = {
 	//laborer
 	cook : {
 		name : 'Cook',
-		primarySkills: ['Craft (cooking)'], //Every character in this vocation receives these skills
-		secondarySkills: ['Craft (cooking)', 'Endurance'], //A character may get skills chosen randomly from this list
+		primarySkills: [profChar.craft], //Every character in this vocation receives these skills
+		secondarySkills: [profChar.endurance], //A character may get skills chosen randomly from this list
 	},
 	stablehand : {
 		name: 'Hostler/Stablehand',
-		primarySkills: ['Labor (mucking)', 'Endurance'], //Every character in this vocation receives these skills
-		secondarySkills: ['Animal husbandry', 'Riding'], //A character may get skills chosen randomly from this list
+		primarySkills: [profChar.labor, profChar.endurance], //Every character in this vocation receives these skills
+		secondarySkills: [profChar.animalHusbandry, profChar.riding], //A character may get skills chosen randomly from this list
 	},
 	prostitute : {
 		name: 'Prostitute',
-		primarySkills: ['Seduction'], //Every character in this vocation receives these skills
-		secondarySkills: ['Performance (dancing)', 'Endurance'], //A character may get skills chosen randomly from this list
+		primarySkills: [profChar.seduction], //Every character in this vocation receives these skills
+		secondarySkills: [profChar.performance, profChar.endurance], //A character may get skills chosen randomly from this list
 	},
 	sailor : {
 		name: 'Sailor/Fisher',
-		primarySkills: ['Seafaring', 'Labor (fishing)'], //Every character in this vocation receives these skills
-		secondarySkills: ['Endurance', 'Knowledge (local coast geography)'], //A character may get skills chosen randomly from this list
+		primarySkills: [profChar.seafaring, profChar.labor], //Every character in this vocation receives these skills
+		secondarySkills: [profChar.endurance, profChar.knowledge], //A character may get skills chosen randomly from this list
 	},
 	unskilledLaborer : {
 		name: 'Unskilled laborer',
-		primarySkills: ['Endurance'], //Every character in this vocation receives these skills
+		primarySkills: [profChar.endurance], //Every character in this vocation receives these skills
 		secondarySkills: [], //A character may get skills chosen randomly from this list
 	},
 	
 	barber : {
 		name: 'Barber',
-		primarySkills: ['Labor (barbery)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	bathAttendant : {
 		name: 'Bath attendant/Masseuse',
-		primarySkills: ['Labor (bath attending/massage', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	bricklayer : {
 		name: 'Bricklayer',
-		primarySkills: ['Labor (brick laying)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	dockworker : {
 		name: 'Dockworker',
-		primarySkills: ['Labor (dockworking)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	launderer : {
 		name: 'Fuller/Launderer',
-		primarySkills: ['Labor (fulling/laundering)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	rower : {
 		name: 'Gondolier/Rower',
-		primarySkills: ['Labor (rowing)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	streetcleaner : {
 		name: 'Streetcleaner',
-		primarySkills: ['Labor (streetcleaning)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	hawker : {
 		name: 'Hawker',
-		primarySkills: ['Labor (hawking)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	maidservant : {
 		name: 'Maidservant',
-		primarySkills: ['Labor (serving)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	ratcatcher : {
 		name: 'Ratcatcher',
-		primarySkills: ['Labor (ratcatching)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	roofer : {
 		name: 'Roofer/Tiler',
-		primarySkills: ['Labor (roofing/tiling)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	scullion : {
 		name: 'Scullion',
-		primarySkills: ['Labor (drudgery)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	woodcutter : {
 		name: 'Sawyer/Woodcutter',
-		primarySkills: ['Labor (sawing/woodcutting)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	teamster : {
 		name: 'Teamster',
-		primarySkills: ['Labor (droving)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 	tavernworker : {
 		name: 'Tavernworker',
-		primarySkills: ['Labor (serving)', 'Endurance']
+		primarySkills: [profChar.labor, profChar.endurance]
 	},
 		
 	
@@ -254,28 +406,28 @@ const vocationCharacteristics = {
 		statReq: ['int', 9],
 		ranks: [['Apprentice',6,1],['Assistant',3,2],['Master',3,3]],
 		classChance: '', //If a master, 25% Mage
-		primarySkills: ['Alchemy'],
-		secondarySkills: ['Collegiate wizardry', 'Loremastery', 'Magical engineering', 'Naturalism', 'Theology'],
+		primarySkills: [profChar.alchemy],
+		secondarySkills: [profChar.collegiateWizardry, profChar.loremastery, profChar.magicalEngineering, profChar.naturalism, profChar.theology],
 	},
 	animalTrainer : {
 		name: 'animal trainer',
 		ranks: [['Domestic',5,1],['Wild',3,1],['Giant',2,1],['Fantastic',1,1]],
-		primarySkills: ['Animal training ()'],
-		secondarySkills: ['Animal training()', 'Animal husbandry', 'Riding'],
+		primarySkills: [profChar.animalTraining],
+		secondarySkills: [profChar.animalTraining, profChar.animalHusbandry, profChar.riding],
 	},
 	artillerist : {
 		name: 'Artillerist',
 		statReq: ['str', 9],
 		classChance: ['fighter',25], //25% Fighter
-		primarySkills: ['Siege engineering'],
-		secondarySkills: ['Manual of arms', 'Endurance', 'Leadership', 'Military strategy'],
+		primarySkills: [profChar.siegeEngineering],
+		secondarySkills: [profChar.manualOfArms, profChar.endurance, profChar.leadership, profChar.militaryStrategy],
 	},
 	engineer : {
 		name: 'engineer',
 		statReq: ['int', 9],
 		ranks: [['Apprentice',6,1],['Assistant',3,2],['Master',2,4]],
 		classChance: ['dwarvenMachinist', 1], //1% Dwarven Machinist
-		primarySkills: ['Engineering'],
+		primarySkills: [profChar.engineering],
 		secondarySkills: ['Knowledge (architecture)', 'Craft (mason)', 'Craft (carpenter)', 'Craft (shipwright)'],
 	},
 	healer : {
@@ -570,76 +722,6 @@ const vocationCharacteristics = {
 	},
 };
 
-const proficiencyCharacteristics = {
-	alchemy : {
-		name : 'Alchemy',
-		maxRanks : 3},
-	
-	animalHusbandry : {
-		name : 'Animal husbandry',
-		maxRanks : 3},
-	
-	art : {
-		name : 'Art',
-		maxRanks : 3},
-	
-	bargaining : {
-		name : 'Bargaining',
-		maxRanks : 8},
-	
-	craft : {
-		name : 'Craft',
-		maxRanks : 3},
-	
-	engineering : {
-		name : 'Engineering',
-		maxRanks : 4},
-	
-	gambling : {
-		name : 'Gambling',
-		maxRanks : 8},
-
-	healing : {
-		name : 'Healing',
-		maxRanks : 3},
-	
-	knowledge : {
-		name : 'Knowledge',
-		maxRanks : 3},
-	
-	manualOfArms : {
-		name : 'Manual of arms',
-		maxRanks : 2},
-	
-	militaryStrategy : {
-		name : 'Military strategy',
-		maxRanks : 3},
-	
-	naturalism : {
-		name : 'Naturalism',
-		maxRanks : 8},
-
-	performance : {
-		name : 'Performance',
-		maxRanks : 3},
-
-	profession : {
-		name : 'Profession',
-		maxRanks : 3},
-
-	seafaring : {
-		name : 'Seafaring',
-		maxRanks : 3},
-
-	siegeEngineering : {
-		name : 'Siege engineering',
-		maxRanks : 2},
-
-	theology : {
-		name : 'Theology',
-		maxRanks : 8},
-
-}
 
 const chooseFunctionsDirectory = {
 	laborer : function(){return chooselaborer()},
@@ -700,7 +782,7 @@ function choosecrafter() {
             prim.push('Craft ('+a+')')
     }
 
-	sec = ['Bargaining', 'Endurance'];
+	sec = [profChar.bargaining, profChar.endurance];
 
 	return {
 		name : title + ' ' + nm,
@@ -731,8 +813,8 @@ function choosemerchant() {
 	title = array[0]; //Returns the title from the first position of the array
 	let rnk = array[2]; //Returns the number of proficiency ranks from the third position of the array
 	
-	prim = ['Bargaining']
-	sec = ['Bargaining', 'Craft', 'Diplomacy', 'Language', 'Navigation', 'Riding', 'Seafaring']
+	prim = [profChar.bargaining]
+	sec = [profChar.bargaining, profChar.craft, profChar.diplomacy, profChar.language, profChar.navigation, profChar.riding, profChar.seafaring]
 	bonusProfs = rnk - 1 //Number of secondary skills character will get due to rank
 	
 	//For each bonus prof, add one from the secondary list to the primary list
@@ -1144,10 +1226,10 @@ function finalizeProficiencies(skills){
 		let currentSkill = skills[i];
 		let localMaxRanks = 1;
 		let currentSkillRank = 1;
-		console.log(currentSkill);
-		console.log(currentSkill.maxRanks);
-		if (proficiencyCharacteristics.currentSkill.maxRanks > 1){
-			localMaxRanks = proficiencyCharacteristics.currentSkill.maxRanks
+		var newDiplo = profChar.diplomacy;
+		console.log(newDiplo.doogle = 2, newDiplo);
+		if (profChar.currentSkill.maxRanks > 1){
+			localMaxRanks = profChar.currentSkill.maxRanks
 		}
 
 		if(usedSkills.has(currentSkill)){
